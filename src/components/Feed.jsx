@@ -1,4 +1,5 @@
 import { SparklesIcon } from "@heroicons/react/24/solid";
+import Input from "./Input";
 
 export default function Feed() {
   return (
@@ -9,6 +10,7 @@ export default function Feed() {
           <SparklesIcon className="h-5 w-5" />
         </div>
       </div>
+      <Input />
     </div>
   )
 }
