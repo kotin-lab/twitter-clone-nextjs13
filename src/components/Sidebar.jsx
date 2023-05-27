@@ -12,7 +12,7 @@ import {
 
 export default function Sidebar() {
   return (
-    <div className="hidden sm:flex sm:flex-col p-2 xl:items-start fixed h-full">
+    <div className="hidden sm:flex sm:flex-col p-2 xl:items-start fixed h-full xl:ml-[41px]">
       {/* Twitter logo */}
       <div className="hoverEffect p-0 hover:bg-blue-100 w-12 h-12 flex items-center justify-center">
         <Image 
@@ -42,19 +42,19 @@ export default function Sidebar() {
       </button>
 
       {/* Mini profile */}
-      <div className="hoverEffect text-gray-700 flex justify-center items-center xl:justify-start mt-auto">
+      <div className="hoverEffect text-gray-700 flex justify-center items-center xl:justify-start mt-auto xl:max-w-[224px] space-x-2">
         <Image 
           src={'https://i.pravatar.cc/100'}
           alt="user image"
           width={50}
           height={50}
-          className="h-10 w-10 object-cover rounded-full xl:mr-2"
+          className="h-10 w-10 object-cover rounded-full"
         />
-        <div className="leading-5 hidden xl:inline">
-          <h4>Ko Tin</h4>
-          <p>@codewithkotin</p>
+        <div className="leading-5 hidden xl:inline flex-1">
+          <h4 className="truncate font-bold">Ko Tin</h4>
+          <p className="truncate text-sm text-gray-500">@codewithkotin</p>
         </div>
-        <EllipsisHorizontalIcon className="h-5 w-5 xl:ml-8 hidden xl:inline" />
+        <EllipsisHorizontalIcon className="h-5 w-5 hidden xl:block" />
       </div>
     </div>
   )
