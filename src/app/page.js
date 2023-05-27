@@ -5,9 +5,13 @@ import Widgets from "@/components/Widgets";
 
 export default async function Home() {
   // https://saurav.tech/NewsAPI/top-headlines/category/health/in.json
-  const url = 'https://saurav.tech/NewsAPI/top-headlines/category/technology/us.json';
-  const response = await fetch(url);
-  const newsResults = await response.json();
+  const newsUrl = 'https://saurav.tech/NewsAPI/top-headlines/category/technology/us.json';
+  const newsResponse = await fetch(newsUrl);
+  const newsResults = await newsResponse.json();
+
+  const randomUsersUlr = 'https://randomuser.me/api/?results=50&inc=name,login,picture';
+  const randomUsersResponse = await fetch(randomUsersUlr);
+  const randomUserResults = await randomUsersResponse.json();
 
   return (
     <main className="flex min-h-screen max-w-7xl mx-auto">
@@ -18,7 +22,7 @@ export default async function Home() {
       <Feed />
       
       {/* Widgets */}
-      <Widgets newsResults={newsResults.articles} />
+      <Widgets newsResults={newsResults.articles} randomUsers={randomUserResults.results} />
       
       {/* Modal */}
     </main>
