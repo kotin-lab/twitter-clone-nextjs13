@@ -5,6 +5,7 @@ const nextConfig = {
       'upload.wikimedia.org',
       'i.pravatar.cc',
       'images.unsplash.com',
+      'lh3.googleusercontent.com',
     ]
   }
 }

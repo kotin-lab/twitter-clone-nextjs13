@@ -1,16 +1,26 @@
+'use client';
+
 import { FaceSmileIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { signOut, useSession } from "next-auth/react";
 // import { PhotoIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
 export default function Input() {
-  return (
+  const { data: session } = useSession();
+
+  return session && (
     <div className="flex border-b border-gray-200 p-3 space-x-3">
       <div className="">
         <Image 
-            src={'https://i.pravatar.cc/100'}
+            src={session?.user.image}
             alt="user image"
             width={50}
             height={50}
+            onClick={() => {
+              if (confirm('Are you sign out?')) {
+                signOut();
+              }
+            }}  
             className="h-11 w-11 object-cover rounded-full cursor-pointer hover:brightness-95"
         />
       </div>
@@ -35,5 +45,5 @@ export default function Input() {
         </div>
       </div>
     </div>
-  )
+  );
 }

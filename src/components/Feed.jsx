@@ -1,8 +1,10 @@
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import Input from "./Input";
 import Post from "./Post";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default function Feed() {
+export default async function Feed() {
   const posts = [
     {
       id: "1",
@@ -23,6 +25,7 @@ export default function Feed() {
       timestamp: "2 days ago",
     },
   ];
+  const session = await getServerSession(authOptions);
 
   return (
     <div className="xl:ml-[313px] border-l border-r border-gray-200 xl:min-w-[576px] sm:ml-[73px] flex-grow max-w-xl">
@@ -32,7 +35,7 @@ export default function Feed() {
           <SparklesIcon className="h-5 w-5" />
         </div>
       </div>
-      <Input />
+      {session && <Input />}
       {posts.map(post => (
         <Post key={post.id} post={post} />
       ))}

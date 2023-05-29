@@ -9,8 +9,14 @@ import {
   BookmarkIcon, 
   ClipboardDocumentCheckIcon
 } from '@heroicons/react/24/outline';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import SignInButton from "./SignInButton";
+import SidebarMiniProfile from "./SidebarMiniProfile";
 
-export default function Sidebar() {
+export default async function Sidebar() {
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="hidden sm:flex sm:flex-col p-2 xl:items-start fixed h-full xl:ml-[41px]">
       {/* Twitter logo */}
@@ -28,34 +34,33 @@ export default function Sidebar() {
       <div className="mt-4 mb-2.5 flex flex-col xl:items-start">
         <SidebarMenuItem text={'Home'} Icon={HomeIcon} />
         <SidebarMenuItem text={'Explore'} Icon={HashtagIcon} />
-        <SidebarMenuItem text={'Notifications'} Icon={BellIcon} />
-        <SidebarMenuItem text={'Messages'} Icon={InboxIcon} />
-        <SidebarMenuItem text={'Bookmarks'} Icon={BookmarkIcon} />
-        <SidebarMenuItem text={'Lists'} Icon={ClipboardDocumentCheckIcon} />
-        <SidebarMenuItem text={'Profile'} Icon={UserIcon} />
-        <SidebarMenuItem text={'More'} Icon={EllipsisHorizontalCircleIcon} />
+        {session && (
+          <>
+            <SidebarMenuItem text={'Notifications'} Icon={BellIcon} />
+            <SidebarMenuItem text={'Messages'} Icon={InboxIcon} />
+            <SidebarMenuItem text={'Bookmarks'} Icon={BookmarkIcon} />
+            <SidebarMenuItem text={'Lists'} Icon={ClipboardDocumentCheckIcon} />
+            <SidebarMenuItem text={'Profile'} Icon={UserIcon} />
+            <SidebarMenuItem text={'More'} Icon={EllipsisHorizontalCircleIcon} />
+          </>
+        )}
       </div>
 
       {/* Button */}
-      <button className="bg-blue-400 text-white rounded-full w-56 h-12 font-bold shadow-md text-lg hover:brightness-95 hidden xl:inline">
-        Tweet
-      </button>
+      {session ? (
+        <button className="bg-blue-400 text-white rounded-full w-56 h-12 font-bold shadow-md text-lg hover:brightness-95 hidden xl:inline">
+          Tweet
+        </button>
+      ) : (
+        <SignInButton />
+      )}
 
       {/* Mini profile */}
-      <div className="hoverEffect text-gray-700 flex justify-center items-center xl:justify-start mt-auto xl:max-w-[224px] space-x-2">
-        <Image 
-          src={'https://i.pravatar.cc/100'}
-          alt="user image"
-          width={50}
-          height={50}
-          className="h-10 w-10 object-cover rounded-full"
-        />
-        <div className="leading-5 hidden xl:inline flex-1">
-          <h4 className="truncate font-bold">Ko Tin</h4>
-          <p className="truncate text-sm text-gray-500">@codewithkotin</p>
+      {session && (
+        <div className="mt-auto">
+          <SidebarMiniProfile />
         </div>
-        <EllipsisHorizontalIcon className="h-5 w-5 hidden xl:block" />
-      </div>
+      )}
     </div>
   )
 }
