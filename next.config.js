@@ -6,6 +6,7 @@ const nextConfig = {
       'i.pravatar.cc',
       'images.unsplash.com',
       'lh3.googleusercontent.com',
+      'firebasestorage.googleapis.com',
     ]
   }
 }

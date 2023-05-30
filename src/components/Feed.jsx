@@ -1,31 +1,27 @@
+'use client';
+
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import Input from "./Input";
 import Post from "./Post";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "../../firebase";
+import { useSession } from "next-auth/react";
 
-export default async function Feed() {
-  const posts = [
-    {
-      id: "1",
-      name: "Ko Tin",
-      username: "codewithkotin",
-      userImg: "https://i.pravatar.cc/100",
-      img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80",
-      text: "nice view!",
-      timestamp: "2 hours ago",
-    },
-    {
-      id: "2",
-      name: "John Smith",
-      username: "codewithjohnsmith",
-      userImg: "https://i.pravatar.cc/100",
-      img: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80",
-      text: "wow!",
-      timestamp: "2 days ago",
-    },
-  ];
-  const session = await getServerSession(authOptions);
+export default function Feed() {
+  const [posts, setPosts] = useState([]);
+  const {data: session} = useSession();
+
+  // Effects
+  useEffect(() => {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, orderBy('timestamp', 'desc'));
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      setPosts(querySnapshot.docs);
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <div className="xl:ml-[313px] border-l border-r border-gray-200 xl:min-w-[576px] sm:ml-[73px] flex-grow max-w-xl">
