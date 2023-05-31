@@ -58,8 +58,10 @@ export default function Post({post}) {
     const postRef = doc(db, 'posts', post.id);
     await deleteDoc(postRef);
 
-    const imageRef = ref(storage, `posts/${post.id}/image`);
-    await deleteObject(imageRef);
+    if (post.data().image) {
+      const imageRef = ref(storage, `posts/${post.id}/image`);
+      await deleteObject(imageRef);
+    }
   }
 
   return (
