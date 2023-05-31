@@ -10,9 +10,10 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import Image from "next/image";
 import Moment from "react-moment";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 
 export default function Post({post}) {
   const {data: session} = useSession();
@@ -53,6 +54,14 @@ export default function Post({post}) {
     }
   }
 
+  async function deletePost() {
+    const postRef = doc(db, 'posts', post.id);
+    await deleteDoc(postRef);
+
+    const imageRef = ref(storage, `posts/${post.id}/image`);
+    await deleteObject(imageRef);
+  }
+
   return (
     <div className="flex p-3 cursor-pointer border-b border-gray-200 space-x-3">
       {/* user image */}
@@ -75,7 +84,7 @@ export default function Post({post}) {
             <h4 className="flex-1 font-bold text-[15px] sm:text-[16px] hover:underline">{post.data().name}</h4>
             <span className="text-sm sm:text-[15px] ">@{post.data().username} -</span>
             <span className="text-sm sm:text-[15px] hover:underline">
-              <Moment fromNow>{post.data().timestamp.toDate()}</Moment>
+              <Moment fromNow>{post.data().timestamp?.toDate()}</Moment>
             </span>
           </div>
           {/* Ellipsis icon */}
@@ -99,7 +108,15 @@ export default function Post({post}) {
         {/* icons */}
         <div className="flex justify-between items-center p-2 text-gray-500">
           <ChatBubbleOvalLeftEllipsisIcon className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" />
-          <TrashIcon className="w-9 h-9 hoverEffect p-2 hover:text-red-500 hover:bg-red-100" />
+          {session?.user.uid === post.data().id && (
+            <TrashIcon onClick={() => {
+                if (confirm('Are you sure you want to delete this post?')) {
+                  deletePost();
+                }
+              }} 
+              className="w-9 h-9 hoverEffect p-2 hover:text-red-500 hover:bg-red-100" 
+            />
+          )}
           <div className="inline-flex items-center">
             {hasLiked ? (
               <HeartIconFilled onClick={likePost} className="w-9 h-9 hoverEffect p-2 text-red-500 hover:bg-red-100" />
