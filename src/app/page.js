@@ -1,4 +1,5 @@
 // Components
+import CommentModal from "@/components/CommentModal";
 import Feed from "@/components/Feed";
 import Sidebar from "@/components/Sidebar";
 import Widgets from "@/components/Widgets";
@@ -25,6 +26,7 @@ export default async function Home() {
       <Widgets newsResults={newsResults.articles} randomUsers={randomUserResults.results} />
       
       {/* Modal */}
+      <CommentModal />
     </main>
   )
 }

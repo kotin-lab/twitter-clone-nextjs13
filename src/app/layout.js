@@ -1,5 +1,5 @@
 import './globals.css'
-import { NextAuthProvider } from './providers'
+import { NextAuthProvider, RecoilProvider } from './providers'
 
 export const metadata = {
   title: 'Twitter Clone',
@@ -10,7 +10,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className=''>
-        <NextAuthProvider>{children}</NextAuthProvider>
+        <RecoilProvider>
+          <NextAuthProvider>
+              {children}
+          </NextAuthProvider>
+        </RecoilProvider>
       </body>
     </html>
   )
