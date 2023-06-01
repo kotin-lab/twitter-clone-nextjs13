@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSession } from "next-auth/react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -32,9 +33,18 @@ export default function Feed() {
         </div>
       </div>
       {session && <Input />}
-      {posts.map(post => (
-        <Post key={post.id} post={post} />
-      ))}
+      <AnimatePresence>
+        {posts.map(post => (
+          <motion.div
+            key={post.id}
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
+          >
+            <Post post={post} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }
