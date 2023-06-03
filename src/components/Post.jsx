@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/24/solid";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
-import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getCountFromServer, onSnapshot, setDoc } from "firebase/firestore";
 import Image from "next/image";
 import Moment from "react-moment";
 import { db, storage } from "../../firebase";
@@ -23,7 +23,9 @@ export default function Post({post}) {
   const [hasLiked, setHasLiked] = useState(false);
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
+  const [commentsCount, setCommentsCount] = useState(0);
 
+  console.log(commentsCount);
   // Effects
   useEffect(() => {
     const likesRef = collection(db, 'posts', post.id, 'likes');
@@ -40,6 +42,16 @@ export default function Post({post}) {
     const liked = likes.findIndex(like => like.id === session.user.uid) !== -1;
     setHasLiked(liked);
   }, [likes, session]);
+
+  useEffect(() => {
+    async function getCommentsCount() {
+      const commentsRef = collection(db, 'posts', post.id, 'comments');
+      const snapshot = await getCountFromServer(commentsRef);
+      
+      setCommentsCount(snapshot.data().count);
+    }
+    getCommentsCount();
+  }, [post]);
 
   // Handlers 
   async function likePost() {
@@ -113,18 +125,23 @@ export default function Post({post}) {
 
         {/* icons */}
         <div className="flex justify-between items-center p-2 text-gray-500">
-          <ChatBubbleOvalLeftEllipsisIcon
-            onClick={() => {
-              if (!session) {
-                signIn();
-              } else {
-                setPostId(post.id);
-                setModalOpen(!modalOpen)
+          <div className="inline-flex items-center">
+            <ChatBubbleOvalLeftEllipsisIcon
+              onClick={() => {
+                if (!session) {
+                  signIn();
+                } else {
+                  setPostId(post.id);
+                  setModalOpen(!modalOpen)
 
-              }
-            }}
-           className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
-          />
+                }
+              }}
+              className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
+            />
+            {commentsCount > 0 && (
+              <span className="text-sm select-none">{commentsCount}</span>
+            )}
+          </div>
           {session?.user.uid === post.data().id && (
             <TrashIcon onClick={() => {
                 if (confirm('Are you sure you want to delete this post?')) {

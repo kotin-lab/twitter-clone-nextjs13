@@ -5,11 +5,12 @@ import { modalState, postIdState } from "@/atom/modalAtom";
 import ReactModal from "react-modal";
 import { FaceSmileIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import Image from "next/image";
 import Moment from "react-moment";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 ReactModal.defaultStyles.overlay.backgroundColor = 'rgb(0 0 0 /0.5)';
 ReactModal.defaultStyles.overlay.zIndex = '100';
@@ -20,6 +21,7 @@ export default function CommentModal() {
   const [post, setPost] = useState(null);
   const {data: session} = useSession();
   const [input, setInput] = useState('');
+  const router = useRouter();
 
   // Effects
   useEffect(() => {
@@ -35,7 +37,20 @@ export default function CommentModal() {
 
   // Handlers
   async function sendComment() {
-    console.log('sendComment clicked');
+    const {name, username, image: userImg} = session.user;
+    const postsRef = collection(db, 'posts', postId, 'comments');
+    
+    await addDoc(postsRef, {
+      comment: input,
+      name,
+      username,
+      userImg,
+      timestamp: serverTimestamp()
+    });
+
+    setOpen(false);
+    setInput('');
+    router.push(`/posts/${postId}`);
   }
 
   function closeModal() {
