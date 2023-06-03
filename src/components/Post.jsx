@@ -14,7 +14,7 @@ import { db, storage } from "../../firebase";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
-import modalState from "@/atom/modalAtom";
+import { modalState, postIdState } from "@/atom/modalAtom";
 import { useRecoilState } from "recoil";
 
 export default function Post({post}) {
@@ -22,6 +22,7 @@ export default function Post({post}) {
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const [postId, setPostId] = useRecoilState(postIdState);
 
   // Effects
   useEffect(() => {
@@ -113,7 +114,15 @@ export default function Post({post}) {
         {/* icons */}
         <div className="flex justify-between items-center p-2 text-gray-500">
           <ChatBubbleOvalLeftEllipsisIcon
-            onClick={() => setModalOpen(!modalOpen)}
+            onClick={() => {
+              if (!session) {
+                signIn();
+              } else {
+                setPostId(post.id);
+                setModalOpen(!modalOpen)
+
+              }
+            }}
            className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
           />
           {session?.user.uid === post.data().id && (

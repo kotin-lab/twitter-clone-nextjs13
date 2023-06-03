@@ -1,8 +1,11 @@
 const { atom } = require("recoil");
 
-const modalState = atom({
+export const modalState = atom({
   key: 'modalState',
   default: false
 });
 
-export default modalState;
+export const postIdState = atom({
+  key: 'postIdState',
+  default: null
+});
