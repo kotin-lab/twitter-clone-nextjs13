@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import Widgets from "@/components/Widgets";
 import PostPageFeedNavbar from "@/components/PostPageFeedNavbar";
 import Post from "@/components/Post";
+import PostPageComments from "@/components/PostPageComments";
 
 export default async function PostPage({params}) {
   let post;
@@ -35,6 +36,8 @@ export default async function PostPage({params}) {
           <PostPageFeedNavbar />
         </div>
         <Post post={post} />
+
+        <PostPageComments postId={postId} />
       </div>
       
       {/* Widgets */}

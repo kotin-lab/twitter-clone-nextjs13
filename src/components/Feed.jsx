@@ -1,12 +1,13 @@
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Components
 import Input from "./Input";
 import Posts from "./Posts";
 
 export default function Feed() {
-  const session = getServerSession();
+  const session = getServerSession(authOptions);
 
   return (
     <div className="xl:ml-[313px] border-l border-r border-gray-200 xl:min-w-[576px] sm:ml-[73px] flex-grow max-w-xl">
