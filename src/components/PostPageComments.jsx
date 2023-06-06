@@ -20,12 +20,17 @@ export default function PostPageComments({postId}) {
 
     return unsubscribe;
   }, [postId]);
-  
+
   return comments.length > 0 && (
-    <div>
+    <>
       {comments.map(comment => (
-        <Comment key={comment.id} id={comment.id} comment={comment.data()} />
+        <Comment 
+          key={comment.id} 
+          commentId={comment.id} 
+          originalPostId={postId} 
+          comment={comment.data()} 
+        />
       ))}
-    </div>
+    </>
   );
 }

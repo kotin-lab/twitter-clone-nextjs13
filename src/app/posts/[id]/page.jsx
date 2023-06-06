@@ -37,7 +37,9 @@ export default async function PostPage({params}) {
         </div>
         <Post post={post} />
 
-        <PostPageComments postId={postId} />
+        <div className="">
+          <PostPageComments postId={postId} />
+        </div>
       </div>
       
       {/* Widgets */}

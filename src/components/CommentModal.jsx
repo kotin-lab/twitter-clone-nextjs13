@@ -38,10 +38,11 @@ export default function CommentModal() {
 
   // Handlers
   async function sendComment() {
-    const {name, username, image: userImg} = session.user;
+    const {name, username, image: userImg, uid} = session.user;
     const postsRef = collection(db, 'posts', postId, 'comments');
     
     await addDoc(postsRef, {
+      uid,
       comment: input,
       name,
       username,
