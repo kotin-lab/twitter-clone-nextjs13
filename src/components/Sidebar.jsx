@@ -26,7 +26,7 @@ export default async function Sidebar() {
           width={50}
           height={50}
           alt="twitter"
-          className="object-cover w-8 h-8"
+          className="object-contain w-8 h-8"
         />
       </div>
 

@@ -3,6 +3,7 @@
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
+import { AnimatePresence, motion } from "framer-motion";
 
 // Components
 import Comment from "./Comment";
@@ -22,15 +23,21 @@ export default function PostPageComments({postId}) {
   }, [postId]);
 
   return comments.length > 0 && (
-    <>
+    <AnimatePresence>
       {comments.map(comment => (
-        <Comment 
+        <motion.div
           key={comment.id} 
-          commentId={comment.id} 
-          originalPostId={postId} 
-          comment={comment.data()} 
-        />
+          initial={{opacity: 0, scale: 0.9}}
+          animate={{opacity: 1, scale: 1}}
+          transition={{duration: 0.5}}
+        >
+          <Comment 
+            commentId={comment.id} 
+            originalPostId={postId} 
+            comment={comment.data()} 
+          />
+        </motion.div>
       ))}
-    </>
+    </AnimatePresence>
   );
 }
