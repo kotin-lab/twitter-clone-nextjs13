@@ -1,7 +1,8 @@
-'use client';
-
-import { getProviders, signIn } from 'next-auth/react';
+import { getProviders } from 'next-auth/react';
 import Image from 'next/image';
+
+// Components
+import PrividerSignInButton from '@/components/PrividerSignInButton';
 
 export default async function Signin() {
   const providers = await getProviders();
@@ -25,7 +26,7 @@ export default async function Signin() {
                 className="object-contain mb-10 w-28 h-28"
               />
               <p className='text-gray-700 mb-6 text-center'>This app is created for learning purposes</p>
-              <button onClick={() => signIn(provider.id, {callbackUrl: '/'})} className='px-4 py-2 rounded-lg sm:text-lg bg-red-400 text-white text-center hover:brightness-95 transition-colors'>Sign in with {provider.name}</button>
+              <PrividerSignInButton provider={provider} />
             </div>
           ))}
         </div>
