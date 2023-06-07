@@ -14,23 +14,21 @@ export default async function Signin() {
         alt='twitter image inside a phone'
         className='w-48 h-80 hidden sm:block object-cover rotate-6'
       />
-      {providers && (
-        <div className="">
-          {Object.values(providers).map(provider => (
-            <div key={provider.id} className="flex flex-col items-center">
-              <Image 
-                src={'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/292px-Logo_of_Twitter.svg.png'}
-                width={125}
-                height={125}
-                alt="twitter logo"
-                className="object-contain mb-10 w-28 h-28"
-              />
-              <p className='text-gray-700 mb-6 text-center'>This app is created for learning purposes</p>
-              <PrividerSignInButton provider={provider} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="">
+        {Object.values(providers).map(provider => (
+          <div key={provider.id} className="flex flex-col items-center">
+            <Image 
+              src={'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/292px-Logo_of_Twitter.svg.png'}
+              width={125}
+              height={125}
+              alt="twitter logo"
+              className="object-contain mb-10 w-28 h-28"
+            />
+            <p className='text-gray-700 mb-6 text-center'>This app is created for learning purposes</p>
+            <PrividerSignInButton provider={provider} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
