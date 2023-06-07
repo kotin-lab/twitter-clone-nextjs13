@@ -6,8 +6,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Input from "./Input";
 import Posts from "./Posts";
 
-export default function Feed() {
-  const session = getServerSession(authOptions);
+export default async function Feed() {
+  const session = await getServerSession(authOptions);
 
   return (
     <div className="xl:ml-[313px] border-l border-r border-gray-200 xl:min-w-[576px] sm:ml-[73px] flex-grow max-w-xl">
