@@ -14,7 +14,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "@/atom/modalAtom";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 import { useRouter } from "next/navigation";
 
 export default function PostIcons({id, uid, image}) {

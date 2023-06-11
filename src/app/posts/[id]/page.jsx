@@ -1,5 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { cache } from 'react';
 
 // Components
 import CommentModal from "@/components/CommentModal";
@@ -8,22 +9,36 @@ import Widgets from "@/components/Widgets";
 import PostPageFeedNavbar from "@/components/PostPageFeedNavbar";
 import Post from "@/components/Post";
 import PostPageComments from "@/components/PostPageComments";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+const getPost = cache(async id => {
+  const postSnap = await getDoc(doc(db, 'posts', id));
+  
+  if (!postSnap.exists()) return undefined;
+
+  return postSnap;
+});
+
+export async function generateMetadata({params: {id: postId}}) {
+  let postData = getPost(postId);
+  let sessionData = getServerSession(authOptions);
+
+  let [post, session] = await Promise.all([postData, sessionData]);
+  
+  post = post?.data();
+  const user = session?.user;
+
+  return {
+    title: `${user?.name ?? ''} on Twitter: "${post?.text ?? ''}"`
+  };
+}
 
 export default async function PostPage({params}) {
-  let post;
   const postId = params.id;
 
   // Fetch post
-  const postRef = doc(db, 'posts', postId);
-  const postSnap = await getDoc(postRef);
-
-  if (postSnap.exists()) {
-    post = postSnap;
-  }
-
-  if (!post) {
-    return <h1 className="text-center my-4 text-gray-700">No such post found!</h1>
-  }
+  const post = await getPost(postId);
 
   return (
     <main className="flex min-h-screen max-w-7xl mx-auto">
