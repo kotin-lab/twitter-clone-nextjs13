@@ -2,7 +2,6 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
 // Components
-import PostIcons from "./PostIcons";
 import Date from "./Date";
 import CommentIcons from "./CommentIcons";
 

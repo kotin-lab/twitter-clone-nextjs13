@@ -1,22 +1,12 @@
 import Image from "next/image";
-import SidebarMenuItem from "./SidebarMenuItem";
-import { HomeIcon, HashtagIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
-import { 
-  BellIcon, 
-  EllipsisHorizontalCircleIcon, 
-  UserIcon, 
-  InboxIcon, 
-  BookmarkIcon, 
-  ClipboardDocumentCheckIcon
-} from '@heroicons/react/24/outline';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+// Components
 import SignInButton from "./SignInButton";
 import SidebarMiniProfile from "./SidebarMiniProfile";
+import SidebarMenu from "./SidebarMenu";
+import TweetButton from "./TweetButton";
 
 export default async function Sidebar() {
-  const session = await getServerSession(authOptions);
-
   return (
     <div className="hidden sm:flex sm:flex-col p-2 xl:items-start fixed h-full xl:ml-[41px]">
       {/* Twitter logo */}
@@ -31,36 +21,18 @@ export default async function Sidebar() {
       </div>
 
       {/* Menu */}
-      <div className="mt-4 mb-2.5 flex flex-col xl:items-start">
-        <SidebarMenuItem text={'Home'} Icon={HomeIcon} />
-        <SidebarMenuItem text={'Explore'} Icon={HashtagIcon} />
-        {session && (
-          <>
-            <SidebarMenuItem text={'Notifications'} Icon={BellIcon} />
-            <SidebarMenuItem text={'Messages'} Icon={InboxIcon} />
-            <SidebarMenuItem text={'Bookmarks'} Icon={BookmarkIcon} />
-            <SidebarMenuItem text={'Lists'} Icon={ClipboardDocumentCheckIcon} />
-            <SidebarMenuItem text={'Profile'} Icon={UserIcon} />
-            <SidebarMenuItem text={'More'} Icon={EllipsisHorizontalCircleIcon} />
-          </>
-        )}
+      <div className="mt-4 mb-2.5">
+        <SidebarMenu />
       </div>
 
-      {/* Button */}
-      {session ? (
-        <button className="bg-blue-400 text-white rounded-full w-56 h-12 font-bold shadow-md text-lg hover:brightness-95 hidden xl:inline">
-          Tweet
-        </button>
-      ) : (
-        <SignInButton />
-      )}
+      {/* Tweet button */}
+      <TweetButton />
 
+      {/* Signin Button */}
+      <SignInButton />
+  
       {/* Mini profile */}
-      {session && (
-        <div className="mt-auto">
-          <SidebarMiniProfile />
-        </div>
-      )}
+      <SidebarMiniProfile />
     </div>
   )
 }

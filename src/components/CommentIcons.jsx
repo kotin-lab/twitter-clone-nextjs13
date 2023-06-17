@@ -8,18 +8,15 @@ import {
   TrashIcon 
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/24/solid";
-import { collection, deleteDoc, doc, getCountFromServer, onSnapshot, setDoc } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { signIn, useSession } from "next-auth/react";
+import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "@/atom/modalAtom";
 import { useRouter } from "next/navigation";
 import { db } from "../../firebase";
+import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function CommentIcons({commentId, originalPostId, uid}) {
-  console.log('commentId: ', commentId);
-  console.log('originalPostId: ', originalPostId);
   // Component states
   const [hasLiked, setHasLiked] = useState(false);
   const [likes, setLikes] = useState([]);
@@ -27,8 +24,8 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
   // Recoil states
   const [postId, setPostId] = useRecoilState(postIdState);
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const { currentUser, status } = useAuthStatus();
 
-  const {data: session, status} = useSession();
   const router = useRouter();
 
   // Effects
@@ -42,11 +39,11 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
   }, [commentId, originalPostId]);
 
   useEffect(() => {
-    if (!session) return;
+    if (!currentUser) return;
 
-    const liked = likes.findIndex(like => like.id === session.user.uid) !== -1;
+    const liked = likes.findIndex(like => like.id === currentUser.uid) !== -1;
     setHasLiked(liked);
-  }, [likes, session]);
+  }, [likes, currentUser]);
 
   // Handlers
   async function likeComment(e) {   
@@ -54,16 +51,16 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
 
     if (status === 'loading') return;
 
-    if (!session) {
+    if (!currentUser) {
       signIn();
     } else {
-      const docRef = doc(db, 'posts', originalPostId, 'comments', commentId, 'likes', session.user.uid);
+      const docRef = doc(db, 'posts', originalPostId, 'comments', commentId, 'likes', currentUser.uid);
       
       if (hasLiked) {
         await deleteDoc(docRef);
       } else {
         await setDoc(docRef, {
-          username: session.user.username
+          username: currentUser.username
         });
       }
     }
@@ -79,6 +76,15 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
     }
   }
 
+  // Functions
+  function signIn() {
+    const searchParamsStr = searchParams.toString();
+    let callbackUrl = `${window.location.origin}${pathname}${searchParamsStr ? '/?' + searchParamsStr : ''}`;
+    callbackUrl = encodeURIComponent(callbackUrl);
+    
+    router.push(`/auth/signin?callbackUrl=${callbackUrl}`);
+  }
+
   return (
     <div className="flex justify-between items-center p-2 text-gray-500">
       <div className="inline-flex items-center">
@@ -88,7 +94,7 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
 
             if (status === 'loading') return;
 
-            if (!session) {
+            if (!currentUser) {
               signIn();
             } else {
               setPostId(originalPostId);
@@ -98,7 +104,7 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
           className="w-9 h-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
         />
       </div>
-      {status !== 'loading' && session?.user.uid === uid && (
+      {currentUser?.uid === uid && (
         <TrashIcon onClick={deleteComment} className="w-9 h-9 hoverEffect p-2 hover:text-red-500 hover:bg-red-100" />
       )}
       <div className="inline-flex items-center">

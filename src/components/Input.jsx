@@ -2,15 +2,15 @@
 
 import { FaceSmileIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { signOut, useSession } from "next-auth/react";
-// import { PhotoIcon } from "@heroicons/react/24/solid";
+import { signOut } from "firebase/auth";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { db, storage } from "../../firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function Input() {
-  const { data: session } = useSession();
+  const {currentUser, status} = useAuthStatus();
   const [input, setInput] = useState('');
   const filePickerRef = useRef(null);
   const [file, setFile] = useState(null);
@@ -24,12 +24,12 @@ export default function Input() {
     const docRef = await addDoc(
       collection(db, 'posts'),
       {
-        id: session.user.uid,
+        id: currentUser.uid,
         text: input.trim(),
-        userImg: session.user.image,
+        userImg: currentUser.userImg,
         timestamp: serverTimestamp(),
-        name: session.user.name,
-        username: session.user.username
+        name: currentUser.name,
+        username: currentUser.username
       }
     );
 
@@ -66,11 +66,11 @@ export default function Input() {
     };
   }
 
-  return session && (
+  return currentUser && status !== 'loading' && (
     <div className="flex border-b border-gray-200 p-3 space-x-3">
       <div className="">
         <Image 
-            src={session?.user.image}
+            src={currentUser.userImg}
             alt="user image"
             width={50}
             height={50}

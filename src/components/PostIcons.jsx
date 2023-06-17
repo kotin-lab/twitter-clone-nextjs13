@@ -10,12 +10,12 @@ import {
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/24/solid";
 import { collection, deleteDoc, doc, getCountFromServer, onSnapshot, setDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "@/atom/modalAtom";
 import { db, storage } from "../../firebase";
 import { useRouter } from "next/navigation";
+import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function PostIcons({id, uid, image}) {
   // Component states
@@ -26,8 +26,8 @@ export default function PostIcons({id, uid, image}) {
   // Recoil states
   const [postId, setPostId] = useRecoilState(postIdState);
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const { currentUser } = useAuthStatus();
 
-  const {data: session, status} = useSession();
   const router = useRouter();
 
   // Effects
@@ -41,11 +41,11 @@ export default function PostIcons({id, uid, image}) {
   }, [id]);
 
   useEffect(() => {
-    if (!session) return;
+    if (!currentUser) return;
 
-    const liked = likes.findIndex(like => like.id === session.user.uid) !== -1;
+    const liked = likes.findIndex(like => like.id === currentUser.uid) !== -1;
     setHasLiked(liked);
-  }, [likes, session]);
+  }, [likes, currentUser]);
 
   useEffect(() => {
     async function getCommentsCount() {
@@ -61,18 +61,18 @@ export default function PostIcons({id, uid, image}) {
   async function likePost(e) {   
     e.preventDefault();
 
-    if (status === 'loading') return;
+    // if (status === 'loading') return;
 
-    if (!session) {
+    if (!currentUser) {
       signIn();
     } else {
-      const docRef = doc(db, 'posts', id, 'likes', session.user.uid);
+      const docRef = doc(db, 'posts', id, 'likes', currentUser.uid);
       
       if (hasLiked) {
         await deleteDoc(docRef);
       } else {
         await setDoc(docRef, {
-          username: session.user.username
+          username: currentUser.username
         });
       }
     }
@@ -95,6 +95,15 @@ export default function PostIcons({id, uid, image}) {
     }
   }
 
+  // Functions  
+  function signIn() {
+    const searchParamsStr = searchParams.toString();
+    let callbackUrl = `${window.location.origin}${pathname}${searchParamsStr ? '/?' + searchParamsStr : ''}`;
+    callbackUrl = encodeURIComponent(callbackUrl);
+    
+    router.push(`/auth/signin?callbackUrl=${callbackUrl}`);
+  }
+
   return (
     <div className="flex justify-between items-center p-2 text-gray-500">
       <div className="inline-flex items-center">
@@ -102,9 +111,9 @@ export default function PostIcons({id, uid, image}) {
           onClick={(e) => {
             e.preventDefault();
 
-            if (status === 'loading') return;
+            // if (status === 'loading') return;
 
-            if (!session) {
+            if (!currentUser) {
               signIn();
             } else {
               setPostId(id);
@@ -117,7 +126,7 @@ export default function PostIcons({id, uid, image}) {
           <span className="text-sm select-none">{commentsCount}</span>
         )}
       </div>
-      {session?.user.uid === uid && (
+      {currentUser?.uid === uid && (
         <TrashIcon onClick={deletePost} className="w-9 h-9 hoverEffect p-2 hover:text-red-500 hover:bg-red-100" />
       )}
       <div className="inline-flex items-center">

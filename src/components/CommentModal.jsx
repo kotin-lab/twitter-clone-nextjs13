@@ -8,10 +8,9 @@ import { useEffect, useState } from "react";
 import { addDoc, collection, doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import Image from "next/image";
-import Moment from "react-moment";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Date from "./Date";
+import useAuthStatus from "@/hooks/useAuthStatus";
 
 ReactModal.defaultStyles.overlay.backgroundColor = 'rgb(0 0 0 /0.5)';
 ReactModal.defaultStyles.overlay.zIndex = '100';
@@ -19,8 +18,8 @@ ReactModal.defaultStyles.overlay.zIndex = '100';
 export default function CommentModal() {
   const [open, setOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
+  const { currentUser } = useAuthStatus();
   const [post, setPost] = useState(null);
-  const {data: session} = useSession();
   const [input, setInput] = useState('');
   const router = useRouter();
 
@@ -38,7 +37,7 @@ export default function CommentModal() {
 
   // Handlers
   async function sendComment() {
-    const {name, username, image: userImg, uid} = session.user;
+    const {name, username, userImg, uid} = currentUser;
     const postsRef = collection(db, 'posts', postId, 'comments');
     
     await addDoc(postsRef, {
@@ -98,7 +97,7 @@ export default function CommentModal() {
             <div className="flex py-3 px-4 space-x-3">
               <div className="">
                 <Image 
-                    src={session?.user.image}
+                    src={currentUser.userImg}
                     alt="user image"
                     width={50}
                     height={50}

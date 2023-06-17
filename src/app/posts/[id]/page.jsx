@@ -9,8 +9,6 @@ import Widgets from "@/components/Widgets";
 import PostPageFeedNavbar from "@/components/PostPageFeedNavbar";
 import Post from "@/components/Post";
 import PostPageComments from "@/components/PostPageComments";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const getPost = cache(async id => {
   const postSnap = await getDoc(doc(db, 'posts', id));
@@ -21,16 +19,12 @@ const getPost = cache(async id => {
 });
 
 export async function generateMetadata({params: {id: postId}}) {
-  let postData = getPost(postId);
-  let sessionData = getServerSession(authOptions);
-
-  let [post, session] = await Promise.all([postData, sessionData]);
+  let post = await getPost(postId);
   
   post = post?.data();
-  const user = session?.user;
 
   return {
-    title: `${user?.name ?? ''} on Twitter: "${post?.text ?? ''}"`
+    title: `${post?.text ? `Post: "${post.text}"` : 'Post page'}`
   };
 }
 
