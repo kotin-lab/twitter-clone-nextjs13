@@ -11,7 +11,7 @@ import { HeartIcon as HeartIconFilled } from "@heroicons/react/24/solid";
 import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { modalState, postIdState } from "@/atom/modalAtom";
+import { commentModalState, postIdState } from "@/atom/modalAtom";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { db } from "../../firebase";
 import useAuthStatus from "@/hooks/useAuthStatus";
@@ -26,7 +26,7 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
 
   // Recoil states
   const [postId, setPostId] = useRecoilState(postIdState);
-  const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const [modalOpen, setModalOpen] = useRecoilState(commentModalState);
   const { currentUser, status } = useAuthStatus();
 
   const router = useRouter();

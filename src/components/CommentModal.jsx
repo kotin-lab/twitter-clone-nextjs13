@@ -1,7 +1,7 @@
 'use client';
 
 import { useRecoilState } from "recoil"
-import { modalState, postIdState } from "@/atom/modalAtom";
+import { commentModalState, postIdState } from "@/atom/modalAtom";
 import ReactModal from "react-modal";
 import { FaceSmileIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
@@ -16,7 +16,7 @@ ReactModal.defaultStyles.overlay.backgroundColor = 'rgb(0 0 0 /0.5)';
 ReactModal.defaultStyles.overlay.zIndex = '100';
 
 export default function CommentModal() {
-  const [open, setOpen] = useRecoilState(modalState);
+  const [open, setOpen] = useRecoilState(commentModalState);
   const [postId, setPostId] = useRecoilState(postIdState);
   const { currentUser } = useAuthStatus();
   const [post, setPost] = useState(null);

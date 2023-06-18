@@ -12,7 +12,7 @@ import { collection, deleteDoc, doc, getCountFromServer, onSnapshot, setDoc } fr
 import { deleteObject, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { modalState, postIdState } from "@/atom/modalAtom";
+import { commentModalState, postIdState } from "@/atom/modalAtom";
 import { db, storage } from "../../firebase";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useAuthStatus from "@/hooks/useAuthStatus";
@@ -27,7 +27,7 @@ export default function PostIcons({id, uid, image}) {
 
   // Recoil states
   const [postId, setPostId] = useRecoilState(postIdState);
-  const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const [modalOpen, setModalOpen] = useRecoilState(commentModalState);
   const { currentUser } = useAuthStatus();
 
   const router = useRouter();

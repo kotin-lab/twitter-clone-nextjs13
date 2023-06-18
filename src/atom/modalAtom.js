@@ -1,7 +1,12 @@
 const { atom } = require("recoil");
 
-export const modalState = atom({
-  key: 'modalState',
+export const commentModalState = atom({
+  key: 'commentModalState',
+  default: false
+});
+
+export const tweetModalState = atom({
+  key: 'tweetModalState',
   default: false
 });
 

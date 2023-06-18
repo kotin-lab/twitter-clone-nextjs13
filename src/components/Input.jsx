@@ -9,7 +9,7 @@ import { db, storage } from "../../firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import useAuthStatus from "@/hooks/useAuthStatus";
 
-export default function Input() {
+export default function Input({successCallback}) {
   const {currentUser, status} = useAuthStatus();
   const [input, setInput] = useState('');
   const filePickerRef = useRef(null);
@@ -51,6 +51,9 @@ export default function Input() {
     setInput('');
     setFile(null);
     setLoading(false);
+
+    // Call the callback function
+    if (successCallback && typeof successCallback === 'function') successCallback();
   }
 
   async function addImageToPost(e) {

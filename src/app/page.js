@@ -2,6 +2,7 @@
 import CommentModal from "@/components/CommentModal";
 import Feed from "@/components/Feed";
 import Sidebar from "@/components/Sidebar";
+import TweetModal from "@/components/TweetModal";
 import Widgets from "@/components/Widgets";
 
 export default async function Home() {
@@ -18,6 +19,7 @@ export default async function Home() {
       
       {/* Modal */}
       <CommentModal />
+      <TweetModal />
     </main>
   )
 }
