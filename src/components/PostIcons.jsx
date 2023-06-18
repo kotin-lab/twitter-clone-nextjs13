@@ -14,10 +14,12 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "@/atom/modalAtom";
 import { db, storage } from "../../firebase";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useAuthStatus from "@/hooks/useAuthStatus";
 
-export default function PostIcons({id, uid, image}) {
+export default function PostIcons({id, uid, image}) {  
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   // Component states
   const [commentsCount, setCommentsCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);

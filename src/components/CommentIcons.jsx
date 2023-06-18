@@ -12,11 +12,14 @@ import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firesto
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "@/atom/modalAtom";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { db } from "../../firebase";
 import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function CommentIcons({commentId, originalPostId, uid}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   // Component states
   const [hasLiked, setHasLiked] = useState(false);
   const [likes, setLikes] = useState([]);
