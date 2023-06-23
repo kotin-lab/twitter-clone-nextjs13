@@ -15,8 +15,10 @@ import { commentModalState, postIdState } from "@/atom/modalAtom";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { db } from "../../firebase";
 import useAuthStatus from "@/hooks/useAuthStatus";
+import { getAuth } from "firebase/auth";
 
 export default function CommentIcons({commentId, originalPostId, uid}) {
+  const auth = getAuth();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -63,6 +65,7 @@ export default function CommentIcons({commentId, originalPostId, uid}) {
         await deleteDoc(docRef);
       } else {
         await setDoc(docRef, {
+          owner: auth.currentUser.uid,
           username: currentUser.username
         });
       }

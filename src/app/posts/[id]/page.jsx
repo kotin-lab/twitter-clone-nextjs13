@@ -10,13 +10,13 @@ import PostPageFeedNavbar from "@/components/PostPageFeedNavbar";
 import Post from "@/components/Post";
 import PostPageComments from "@/components/PostPageComments";
 
-const getPost = cache(async id => {
+const getPost = async id => {
   const postSnap = await getDoc(doc(db, 'posts', id));
   
   if (!postSnap.exists()) return undefined;
 
   return postSnap;
-});
+};
 
 export async function generateMetadata({params: {id: postId}}) {
   let post = await getPost(postId);

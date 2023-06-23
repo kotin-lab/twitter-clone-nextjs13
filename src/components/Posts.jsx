@@ -32,9 +32,9 @@ export default function Posts() {
           animate={{opacity: 1, scale: 1}}
           transition={{duration: 0.5}}
         >
-          <Link href={`/posts/${post.id}`}>
+          {/* <Link href={`/posts/${post.id}`}> */}
             <Post post={post} />
-          </Link>
+          {/* </Link> */}
         </motion.div>
       ))}
     </AnimatePresence>

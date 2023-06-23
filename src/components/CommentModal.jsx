@@ -11,11 +11,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Date from "./Date";
 import useAuthStatus from "@/hooks/useAuthStatus";
+import { getAuth } from "firebase/auth";
 
 ReactModal.defaultStyles.overlay.backgroundColor = 'rgb(0 0 0 /0.5)';
 ReactModal.defaultStyles.overlay.zIndex = '100';
 
 export default function CommentModal() {
+  const auth = getAuth();
   const [open, setOpen] = useRecoilState(commentModalState);
   const [postId, setPostId] = useRecoilState(postIdState);
   const { currentUser } = useAuthStatus();
@@ -41,6 +43,7 @@ export default function CommentModal() {
     const postsRef = collection(db, 'posts', postId, 'comments');
     
     await addDoc(postsRef, {
+      owner: auth.currentUser.uid,
       uid,
       comment: input,
       name,

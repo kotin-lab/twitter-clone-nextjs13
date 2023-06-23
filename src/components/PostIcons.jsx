@@ -16,8 +16,10 @@ import { commentModalState, postIdState } from "@/atom/modalAtom";
 import { db, storage } from "../../firebase";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useAuthStatus from "@/hooks/useAuthStatus";
+import { getAuth } from "firebase/auth";
 
 export default function PostIcons({id, uid, image}) {  
+  const auth = getAuth();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   // Component states
@@ -28,7 +30,7 @@ export default function PostIcons({id, uid, image}) {
   // Recoil states
   const [postId, setPostId] = useRecoilState(postIdState);
   const [modalOpen, setModalOpen] = useRecoilState(commentModalState);
-  const { currentUser } = useAuthStatus();
+  const { currentUser, status } = useAuthStatus();
 
   const router = useRouter();
 
@@ -63,7 +65,7 @@ export default function PostIcons({id, uid, image}) {
   async function likePost(e) {   
     e.preventDefault();
 
-    // if (status === 'loading') return;
+    if (status === 'loading') return;
 
     if (!currentUser) {
       signIn();
@@ -74,6 +76,7 @@ export default function PostIcons({id, uid, image}) {
         await deleteDoc(docRef);
       } else {
         await setDoc(docRef, {
+          owner: auth.currentUser.uid,
           username: currentUser.username
         });
       }
